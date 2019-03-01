@@ -33,5 +33,61 @@ namespace CSharpFunctional.Extention
         {
             return Result<T, ET>.Error(value);
         }
+
+        /// <summary>
+        /// convert Result<T, ET> to Result<U, ET>
+        /// </summary>
+        /// <typeparam name="T">input in success type</typeparam>
+        /// <typeparam name="ET">input and output in error type</typeparam>
+        /// <typeparam name="U">output in sucess type</typeparam>
+        /// <param name="result">input result</param>
+        /// <param name="mapFunc">convert function T to U</param>
+        /// <returns>converted result structure</returns>
+        public static Result<U, ET> Map<T, ET, U>(this Result<T, ET> result, Func<T, U> mapFunc)
+        {
+            if(result.IsOK)
+            {
+                return mapFunc(result.Value).ToSuccess<U, ET>();
+            }
+            else
+            {
+                return result.ErrorValue.ToError<U, ET>();
+            }
+        }
+
+        /// <summary>
+        /// convert non result value to Result<U, ET>
+        /// </summary>
+        /// <typeparam name="T">non result value type</typeparam>
+        /// <typeparam name="U">output in success value type</typeparam>
+        /// <typeparam name="ET">output in error value type</typeparam>
+        /// <param name="value">non result value</param>
+        /// <param name="bindFunc">convert function T to Result<U, ET></param>
+        /// <returns>converted result structure</returns>
+        public static Result<U, ET> Bind<T, U, ET>(this T value, Func<T, Result<U, ET>> bindFunc)
+        {
+            return bindFunc(value);
+        }
+
+        /// <summary>
+        /// convert Result<T, ET> to Result<T, U> 
+        /// </summary>
+        /// <typeparam name="T">in success type</typeparam>
+        /// <typeparam name="ET">input in error type</typeparam>
+        /// <typeparam name="U">output in error type</typeparam>
+        /// <param name="result">input result structure</param>
+        /// <param name="mapErrorFunc">output function Result<T, ET> to Result<T, U></param>
+        /// <returns>converted result structure</returns>
+        public static Result<T, U> mapError<T, ET, U>(this Result<T, ET> result, Func<ET, U> mapErrorFunc)
+        {
+            if (result.IsOK)
+            {
+                return result.Value.ToSuccess<T, U>();
+            }
+            else
+            {
+                return mapErrorFunc(result.ErrorValue).ToError<T, U>();
+            }
+        }
     }
 }

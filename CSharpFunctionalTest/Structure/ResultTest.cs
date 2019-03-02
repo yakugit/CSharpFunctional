@@ -8,6 +8,8 @@ namespace CSharpFunctionalTest.Structure
     public class ResultInstanceTest
     {
         private const int testThreshold = 100;
+        private const int testThresholdOverOne = testThreshold + 1;
+        private const int testThresholdAnderOne = testThreshold - 1;
         private const string okMessage = "Value is OK";
         private const string errorMessage = "Value is Under";
         private const int errorCode = -1;
@@ -25,7 +27,7 @@ namespace CSharpFunctionalTest.Structure
             }
 
             {
-                var overSuccess = GetResult(testThreshold + 1);
+                var overSuccess = GetResult(testThresholdOverOne);
                 Assert.IsTrue(overSuccess.IsOK);
                 Assert.IsFalse(overSuccess.IsError);
                 Assert.IsTrue(overSuccess.Value > testThreshold);
@@ -33,7 +35,7 @@ namespace CSharpFunctionalTest.Structure
             }
 
             {
-                var error = GetResult(testThreshold - 1);
+                var error = GetResult(testThresholdAnderOne);
                 Assert.IsFalse(error.IsOK);
                 Assert.IsTrue(error.IsError);
                 if (testThreshold != default(int))
@@ -52,7 +54,15 @@ namespace CSharpFunctionalTest.Structure
             }
 
             {
-                var mapedSuccess = GetResult(testThreshold).Map(v => okMessage);
+                var bindedError = (testThresholdAnderOne).Bind(GetResult);
+                Assert.IsFalse(bindedError.IsOK);
+                Assert.IsTrue(bindedError.IsError);
+                Assert.AreNotEqual(bindedError.Value, testThreshold);
+                Assert.AreEqual(bindedError.ErrorValue, errorMessage);
+            }
+
+            {
+                var mapedSuccess = testThreshold.Bind(GetResult).Map(v => okMessage);
                 Assert.IsTrue(mapedSuccess.IsOK);
                 Assert.IsFalse(mapedSuccess.IsError);
                 Assert.AreEqual(mapedSuccess.Value, okMessage);
@@ -60,7 +70,23 @@ namespace CSharpFunctionalTest.Structure
             }
 
             {
-                var mapedError = GetResult(testThreshold - 1).mapError<int, string, int>(s => errorCode);
+                var mapedErrorValue = testThresholdAnderOne.Bind(GetResult).Map(v => okMessage);
+                Assert.IsFalse(mapedErrorValue.IsOK);
+                Assert.IsTrue(mapedErrorValue.IsError);
+                Assert.AreNotEqual(mapedErrorValue.Value, okMessage);
+                Assert.AreEqual(mapedErrorValue.ErrorValue, errorMessage);
+            }
+
+            {
+                var mapedErrorSuccessValue = testThreshold.Bind(GetResult).mapError(s => errorCode);
+                Assert.IsTrue(mapedErrorSuccessValue.IsOK);
+                Assert.IsFalse(mapedErrorSuccessValue.IsError);
+                Assert.AreEqual(mapedErrorSuccessValue.Value, testThreshold);
+                Assert.AreNotEqual(mapedErrorSuccessValue.ErrorValue, errorCode);
+            }
+
+            {
+                var mapedError = testThresholdAnderOne.Bind(GetResult).mapError(s => errorCode);
                 Assert.IsFalse(mapedError.IsOK);
                 Assert.IsTrue(mapedError.IsError);
                 Assert.AreNotEqual(mapedError.Value, testThreshold);

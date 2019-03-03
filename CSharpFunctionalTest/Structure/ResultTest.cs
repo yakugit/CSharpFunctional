@@ -46,23 +46,7 @@ namespace CSharpFunctionalTest.Structure
             }
 
             {
-                var bindedSuccess = testThreshold.Bind(GetResult);
-                Assert.IsTrue(bindedSuccess.IsOK);
-                Assert.IsFalse(bindedSuccess.IsError);
-                Assert.AreEqual(bindedSuccess.Value, testThreshold);
-                Assert.AreNotEqual(bindedSuccess.ErrorValue, errorMessage);
-            }
-
-            {
-                var bindedError = (testThresholdAnderOne).Bind(GetResult);
-                Assert.IsFalse(bindedError.IsOK);
-                Assert.IsTrue(bindedError.IsError);
-                Assert.AreNotEqual(bindedError.Value, testThreshold);
-                Assert.AreEqual(bindedError.ErrorValue, errorMessage);
-            }
-
-            {
-                var mapedSuccess = testThreshold.Bind(GetResult).Map(v => okMessage);
+                var mapedSuccess = GetResult(testThreshold).Map(v => okMessage);
                 Assert.IsTrue(mapedSuccess.IsOK);
                 Assert.IsFalse(mapedSuccess.IsError);
                 Assert.AreEqual(mapedSuccess.Value, okMessage);
@@ -70,7 +54,7 @@ namespace CSharpFunctionalTest.Structure
             }
 
             {
-                var mapedErrorValue = testThresholdAnderOne.Bind(GetResult).Map(v => okMessage);
+                var mapedErrorValue = GetResult(testThresholdAnderOne).Map(v => okMessage);
                 Assert.IsFalse(mapedErrorValue.IsOK);
                 Assert.IsTrue(mapedErrorValue.IsError);
                 Assert.AreNotEqual(mapedErrorValue.Value, okMessage);
@@ -78,7 +62,7 @@ namespace CSharpFunctionalTest.Structure
             }
 
             {
-                var mapedErrorSuccessValue = testThreshold.Bind(GetResult).mapError(s => errorCode);
+                var mapedErrorSuccessValue = GetResult(testThreshold).mapError(s => errorCode);
                 Assert.IsTrue(mapedErrorSuccessValue.IsOK);
                 Assert.IsFalse(mapedErrorSuccessValue.IsError);
                 Assert.AreEqual(mapedErrorSuccessValue.Value, testThreshold);
@@ -86,7 +70,7 @@ namespace CSharpFunctionalTest.Structure
             }
 
             {
-                var mapedError = testThresholdAnderOne.Bind(GetResult).mapError(s => errorCode);
+                var mapedError = GetResult(testThresholdAnderOne).mapError(s => errorCode);
                 Assert.IsFalse(mapedError.IsOK);
                 Assert.IsTrue(mapedError.IsError);
                 Assert.AreNotEqual(mapedError.Value, testThreshold);

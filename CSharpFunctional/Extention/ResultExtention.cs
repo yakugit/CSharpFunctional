@@ -56,20 +56,6 @@ namespace CSharpFunctional.Extention
         }
 
         /// <summary>
-        /// convert non result value to Result<U, ET>
-        /// </summary>
-        /// <typeparam name="T">non result value type</typeparam>
-        /// <typeparam name="U">output in success value type</typeparam>
-        /// <typeparam name="ET">output in error value type</typeparam>
-        /// <param name="value">non result value</param>
-        /// <param name="bindFunc">convert function T to Result<U, ET></param>
-        /// <returns>converted result structure</returns>
-        public static Result<U, ET> Bind<T, U, ET>(this T value, Func<T, Result<U, ET>> bindFunc)
-        {
-            return bindFunc(value);
-        }
-
-        /// <summary>
         /// convert Result<T, ET> to Result<T, U> 
         /// </summary>
         /// <typeparam name="T">in success type</typeparam>

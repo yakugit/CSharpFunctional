@@ -9,26 +9,26 @@ namespace CSharpFunctional.Extention
     /// <summary>
     /// Extention Run Return Result Function with Stream  
     /// </summary>
-    public static class StreamResultExtention
+    public static class DisposeResultExtention
     {
         /// <summary>
         /// Combine acquisition, execution, and conversion
         /// </summary>
-        /// <typeparam name="S">type of Stream</typeparam>
+        /// <typeparam name="D">type of Disposable</typeparam>
         /// <typeparam name="T">in Success Type</typeparam>
         /// <typeparam name="ET">in Error Type</typeparam>
-        /// <param name="returnStreamFunc">Return Stream Function</param>
+        /// <param name="returnDisposableFunc">Return Disposable Function</param>
         /// <param name="exceptionConverter">Exception to in Error Type Converter</param>
-        /// <param name="useStreamFunc">Function with Stream</param>
-        /// <returns></returns>
-        public static Result<T,ET> Run<S, T, ET>(this Func<S> returnStreamFunc, Func<Exception, ET> exceptionConverter, 
-            Func<S, Result<T, ET>> useStreamFunc) where S : Stream
+        /// <param name="useDisposableFunc">Function with Stream</param>
+        /// <returns>Result<T,ET></returns>
+        public static Result<T,ET> Run<D, T, ET>(this Func<D> returnDisposableFunc, Func<Exception, ET> exceptionConverter, 
+            Func<D, Result<T, ET>> useDisposableFunc) where D : IDisposable
         {
             try
             {
-                using (var stream = returnStreamFunc())
+                using (var disposable = returnDisposableFunc())
                 {
-                    return useStreamFunc(stream);
+                    return useDisposableFunc(disposable);
                 }
             }
             catch(Exception ex)
@@ -40,21 +40,21 @@ namespace CSharpFunctional.Extention
         /// <summary>
         /// Combine acquisition, execution, and conversion
         /// </summary>
-        /// <typeparam name="S">type of Stream</typeparam>
+        /// <typeparam name="D">type of Disposable</typeparam>
         /// <typeparam name="T">in Success Type</typeparam>
         /// <typeparam name="ET">in Error Type</typeparam>
-        /// <param name="returnStreamFunc">Return Stream Function</param>
+        /// <param name="returnDisposableFunc">Return Stream Function</param>
         /// <param name="exceptionConverter">Exception to in Error Type Converter</param>
-        /// <param name="useStreamAction">Action with Stream</param>
-        /// <returns></returns>
-        public static Result<T, ET> Run<S, T, ET>(this Func<S> returnStreamFunc, Func<Exception, ET> exceptionConverter,
-            Action<S> useStreamAction) where S : Stream
+        /// <param name="useDisposableAction">Action with Disposable</param>
+        /// <returns>Result<T,ET></returns>
+        public static Result<T, ET> Run<D, T, ET>(this Func<D> returnDisposableFunc, Func<Exception, ET> exceptionConverter,
+            Action<D> useDisposableAction) where D : IDisposable
         {
             try
             {
-                using (var stream = returnStreamFunc())
+                using (var stream = returnDisposableFunc())
                 {
-                    useStreamAction(stream);
+                    useDisposableAction(stream);
                     return Result<T, ET>.Success(default(T));
                 }
             }

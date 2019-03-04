@@ -9,7 +9,7 @@ using CSharpFunctional.Structure;
 namespace CSharpFunctionalTest.Extention
 {
     [TestClass]
-    public class StreamResultExtentionTest
+    public class DisposeResultExtentionTest
     {
 
         private const int testCapacity = 1024;
@@ -17,9 +17,9 @@ namespace CSharpFunctionalTest.Extention
         private readonly Func<MemoryStream> testStreamFunc = GetTestStream;
         private const string notMatch = "Not Match";
 
-        [TestCategory("CSharpFunctional_Extention_StreamResultExtention")]
+        [TestCategory("CSharpFunctional_Extention_DisposeResultExtention")]
         [TestMethod]
-        public void StreamResultTest()
+        public void DisposeResultTest()
         {
             {
                 var result = testStreamFunc.Run(ExceptionToString, m =>

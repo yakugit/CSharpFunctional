@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Structure\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\CSharpFunctional\CSharpFunctional.csproj" />
   </ItemGroup>
 
